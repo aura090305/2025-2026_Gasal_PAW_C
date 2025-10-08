@@ -1,5 +1,5 @@
 <?php
 for ($x = 0; $x <= 10; $x++) {
-    echo "The number is; $X <br>";
+    echo "The number is: $X <br>";
 }
 ?>

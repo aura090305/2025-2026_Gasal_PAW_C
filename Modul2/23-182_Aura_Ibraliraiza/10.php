@@ -1,47 +1,171 @@
-# Program Kasir Sederhana
-print("=== SELAMAT DATANG DI KASIR WARUNG MAHASISWA ===")
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sistem Kasir Sederhana (Tanpa Session)</title>
+    <!-- <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f3f6;
+            padding: 20px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 420px;
+            margin: 0 auto;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        select, input[type="number"], input[type="submit"], input[type="reset"] {
+            width: 100%;
+            padding: 8px;
+            margin: 6px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        input[type="submit"], input[type="reset"] {
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background: #0056b3;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #aaa;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background: #007bff;
+            color: white;
+        }
+        .total {
+            text-align: center;
+            font-size: 20px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style> -->
+</head>
+<body>
+    <h2>Sistem Kasir Sederhana</h2>
 
-# Daftar menu dan harga
-menu = {
-    "1": ("Nasi Goreng", 15000),
-    "2": ("Mie Ayam", 12000),
-    "3": ("Ayam Geprek", 18000),
-    "4": ("Es Teh", 5000),
-    "5": ("Kopi", 7000)
-}
+    <?php
+    // Daftar menu dan harga
+    $menu = [
+        "Nasi Goreng" => 15000,
+        "Mie Goreng" => 12000,
+        "Ayam Bakar" => 20000,
+        "Es Teh" => 5000,
+        "Es Jeruk" => 7000
+    ];
 
-total = 0
-lanjut = True
+    // Ambil data keranjang dari form (hidden input)
+    $keranjang = [];
+    if (isset($_POST['namaMenu'])) {
+        for ($i = 0; $i < count($_POST['namaMenu']); $i++) {
+            $keranjang[] = [
+                "nama" => $_POST['namaMenu'][$i],
+                "harga" => $_POST['hargaMenu'][$i],
+                "jumlah" => $_POST['jumlahMenu'][$i],
+                "subtotal" => $_POST['subtotalMenu'][$i]
+            ];
+        }
+    }
 
-while lanjut:
-    print("\n=== MENU MAKANAN & MINUMAN ===")
-    for kode, (nama, harga) in menu.items():
-        print(f"{kode}. {nama} - Rp{harga:,}")
+    // Jika form disubmit untuk menambah item baru
+    if (isset($_POST['tambah'])) {
+        $pilihan = $_POST['menu'];
+        $jumlah = $_POST['jumlah'];
+        $harga = $menu[$pilihan];
+        $subtotal = $harga * $jumlah;
 
-    pilihan = input("\nMasukkan nomor menu yang ingin dibeli: ").strip()
+        // Tambahkan item baru ke keranjang
+        $keranjang[] = [
+            "nama" => $pilihan,
+            "harga" => $harga,
+            "jumlah" => $jumlah,
+            "subtotal" => $subtotal
+        ];
+    }
 
-    if pilihan in menu:
-        nama_menu, harga_menu = menu[pilihan]
-        try:
-            jumlah = int(input(f"Berapa porsi {nama_menu}? "))
-            if jumlah <= 0:
-                print("Jumlah harus lebih dari 0.")
-                continue
-            subtotal = harga_menu * jumlah
-            total += subtotal
-            print(f"→ {nama_menu} x{jumlah} = Rp{subtotal:,}")
-        except ValueError:
-            print("Input jumlah tidak valid. Harus angka.")
-    else:
-        print("Menu tidak ditemukan. Coba lagi.")
+    // Jika tombol "Selesai" ditekan
+    if (isset($_POST['selesai'])) {
+        $total = 0;
+        echo "<table>";
+        echo "<tr><th>Nama Menu</th><th>Harga</th><th>Jumlah</th><th>Subtotal</th></tr>";
+        foreach ($keranjang as $item) {
+            echo "<tr>
+                    <td>{$item['nama']}</td>
+                    <td>Rp " . number_format($item['harga'], 0, ',', '.') . "</td>
+                    <td>{$item['jumlah']}</td>
+                    <td>Rp " . number_format($item['subtotal'], 0, ',', '.') . "</td>
+                  </tr>";
+            $total += $item['subtotal'];
+        }
+        echo "</table>";
+        echo "<div class='total'>Total Bayar: Rp " . number_format($total, 0, ',', '.') . "</div>";
+        exit; // Hentikan eksekusi setelah menampilkan total
+    }
+    ?>
 
-    # Tanya apakah mau tambah item lagi
-    ulang = input("Tambah menu lain? (y/n): ").strip().lower()
-    if ulang != 'y':
-        lanjut = False
+    <!-- Form Input Menu -->
+    <form method="POST">
+        <label for="menu">Pilih Menu:</label>
+        <select name="menu" id="menu" >
+            <option value="">-- Pilih Menu --</option>
+            <?php
+            foreach ($menu as $nama => $harga) {
+                echo "<option value='$nama'>$nama - Rp " . number_format($harga, 0, ',', '.') . "</option>";
+            }
+            ?>
+        </select>
 
-# Output total akhir
-print("\n===============================")
-print(f"Total Belanja Anda = Rp{total:,}")
-print("Terima kasih telah berbelanja")
-print("===============================")
+        <label for="jumlah">Jumlah:</label>
+        <input type="number" name="jumlah" id="jumlah" min="1" >
+
+        <!-- Hidden input agar data sebelumnya tidak hilang -->
+        <?php
+        if (!empty($keranjang)) {
+            foreach ($keranjang as $item) {
+                echo "<input type='hidden' name='namaMenu[]' value='{$item['nama']}'>";
+                echo "<input type='hidden' name='hargaMenu[]' value='{$item['harga']}'>";
+                echo "<input type='hidden' name='jumlahMenu[]' value='{$item['jumlah']}'>";
+                echo "<input type='hidden' name='subtotalMenu[]' value='{$item['subtotal']}'>";
+            }
+        }
+        ?>
+
+        <input type="submit" name="tambah" value="Tambahkan ke Keranjang">
+        <input type="submit" name="selesai" value="Selesai & Hitung Total">
+        <!-- <input type="reset" value="Reset"> -->
+    </form>
+
+    <!-- Tabel Keranjang -->
+    <?php
+    if (!empty($keranjang)) {
+        echo "<table>";
+        echo "<tr><th>Nama Menu</th><th>Harga</th><th>Jumlah</th><th>Subtotal</th></tr>";
+        foreach ($keranjang as $item) {
+            echo "<tr>
+                    <td>{$item['nama']}</td>
+                    <td>Rp " . number_format($item['harga'], 0, ',', '.') . "</td>
+                    <td>{$item['jumlah']}</td>
+                    <td>Rp " . number_format($item['subtotal'], 0, ',', '.') . "</td>
+                  </tr>";
+        }
+        echo "</table>";
+    }
+    ?>
+</body>
+</html>

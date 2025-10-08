@@ -1,43 +1,47 @@
-# Inisialisasi variabel
-total_harga = 0
-beli_lagi = "ya"
+# Program Kasir Sederhana
+print("=== SELAMAT DATANG DI KASIR WARUNG MAHASISWA ===")
 
 # Daftar menu dan harga
-daftar_menu = {
-    "1": {"nama": "Nasi Goreng", "harga": 15000},
-    "2": {"nama": "Mie Ayam", "harga": 12000},
-    "3": {"nama": "Soto Ayam", "harga": 10000},
-    "4": {"nama": "Es Teh", "harga": 5000},
-    "5": {"nama": "Es Jeruk", "harga": 7000}
+menu = {
+    "1": ("Nasi Goreng", 15000),
+    "2": ("Mie Ayam", 12000),
+    "3": ("Ayam Geprek", 18000),
+    "4": ("Es Teh", 5000),
+    "5": ("Kopi", 7000)
 }
 
-print("--- Selamat Datang di Warung Makan Sederhana ---")
-print("------------------ Daftar Menu ------------------")
-for kode, menu in daftar_menu.items():
-    print(f"{kode}. {menu['nama']} \t(Rp {menu['harga']:,})")
-print("-------------------------------------------------")
+total = 0
+lanjut = True
 
-# Perulangan untuk memesan menu
-while beli_lagi.lower() == "ya":
-    pilihan = input("Masukkan kode menu yang ingin dibeli: ")
+while lanjut:
+    print("\n=== MENU MAKANAN & MINUMAN ===")
+    for kode, (nama, harga) in menu.items():
+        print(f"{kode}. {nama} - Rp{harga:,}")
 
-    if pilihan in daftar_menu:
-        menu_terpilih = daftar_menu[pilihan]
-        harga_item = menu_terpilih["harga"]
-        nama_item = menu_terpilih["nama"]
+    pilihan = input("\nMasukkan nomor menu yang ingin dibeli: ").strip()
 
-        # Hitung subtotal
-        total_harga += harga_item
-        print(f"Anda memesan {nama_item}. Harga: Rp {harga_item:,}")
-        
+    if pilihan in menu:
+        nama_menu, harga_menu = menu[pilihan]
+        try:
+            jumlah = int(input(f"Berapa porsi {nama_menu}? "))
+            if jumlah <= 0:
+                print("Jumlah harus lebih dari 0.")
+                continue
+            subtotal = harga_menu * jumlah
+            total += subtotal
+            print(f"→ {nama_menu} x{jumlah} = Rp{subtotal:,}")
+        except ValueError:
+            print("Input jumlah tidak valid. Harus angka.")
     else:
-        print("Kode menu tidak valid. Silakan pilih kode yang benar.")
+        print("Menu tidak ditemukan. Coba lagi.")
 
-    # Tanyakan apakah ingin membeli lagi
-    beli_lagi = input("Apakah ada item lain yang ingin dibeli? (ya/tidak): ")
-    print("-------------------------------------------------")
+    # Tanya apakah mau tambah item lagi
+    ulang = input("Tambah menu lain? (y/n): ").strip().lower()
+    if ulang != 'y':
+        lanjut = False
 
-# Menampilkan total pembayaran
-print("\n--- Rincian Pembayaran ---")
-print(f"Total yang harus dibayar: Rp {total_harga:,}")
-print("Terima kasih atas kunjungan Anda!")
+# Output total akhir
+print("\n===============================")
+print(f"Total Belanja Anda = Rp{total:,}")
+print("Terima kasih telah berbelanja")
+print("===============================")

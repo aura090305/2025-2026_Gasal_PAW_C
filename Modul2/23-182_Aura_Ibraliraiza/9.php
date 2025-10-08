@@ -1,36 +1,43 @@
-# 1. INPUT
-# Menerima input nilai dari pengguna
-# Menggunakan float() agar bisa menerima nilai desimal (contoh: 85.5)
-try:
-    nilai = float(input("Masukkan nilai angka mahasiswa (0-100): "))
-except ValueError:
-    print("Input tidak valid. Harap masukkan angka.")
-    exit() # Keluar dari program jika input bukan angka
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Program Grade Nilai Mahasiswa</title>
+</head>
+<body>
+    <h2>Program Penentuan Grade Nilai Mahasiswa</h2>
+    
+    <form method="post" action="">
+        Masukkan Nilai (0 - 100): 
+        <input type="number" name="nilai" min="0" max="100" required>
+        <input type="submit" value="Proses">
+    </form>
 
-# 2. PROSES PERCABANGAN (Logika Penentuan Grade)
-if nilai < 0 or nilai > 100:
-    grade = "Nilai Tidak Valid"
-    keterangan = "Nilai harus di antara 0 sampai 100."
-elif nilai >= 90:
-    grade = "A"
-    keterangan = "Sangat Baik. Lulus dengan Pujian!"
-elif nilai >= 80:
-    grade = "B"
-    keterangan = "Baik. Lulus."
-elif nilai >= 70:
-    grade = "C"
-    keterangan = "Cukup. Lulus."
-elif nilai >= 60:
-    grade = "D"
-    keterangan = "Kurang. Perlu Perbaikan."
-else:
-    # Nilai di bawah 60
-    grade = "E"
-    keterangan = "Gagal. Mengulang mata kuliah."
+    <?php
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $nilai = $_POST['nilai'];
+        $grade = "";
 
-# 3. OUTPUT
-print("\n--- Hasil Penilaian ---")
-print(f"Nilai Angka Anda: {nilai}")
-print(f"Grade Huruf: {grade}")
-print(f"Keterangan: {keterangan}")
-print("-----------------------")
+        // Percabangan untuk menentukan grade
+        if ($nilai >= 90 && $nilai <= 100) {
+            $grade = "A";
+        } elseif ($nilai >= 80) {
+            $grade = "B";
+        } elseif ($nilai >= 70) {
+            $grade = "C";
+        } elseif ($nilai >= 60) {
+            $grade = "D";
+        } elseif ($nilai >= 0) {
+            $grade = "E";
+        } else {
+            $grade = "Nilai tidak valid!";
+        }
+
+        // Output hasil
+        echo "<hr>";
+        echo "<h3>Hasil:</h3>";
+        echo "Nilai Anda: <b>$nilai</b><br>";
+        echo "Grade Anda: <b>$grade</b>";
+    }
+    ?>
+</body>
+</html>
